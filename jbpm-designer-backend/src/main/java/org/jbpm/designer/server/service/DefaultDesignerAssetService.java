@@ -72,6 +72,7 @@ public class DefaultDesignerAssetService implements DesignerAssetService {
                                   final String editorID,
                                   String hostInfo,
                                   PlaceRequest place ) {
+    	System.out.println("***************Hernsys getEditorParameters");
         List<String> activeNodesList = new ArrayList<String>();
         String activeNodesParam = place.getParameter( "activeNodes", null );
 
@@ -157,6 +158,7 @@ public class DefaultDesignerAssetService implements DesignerAssetService {
         Asset<String> processAsset = builder.getAsset();
 
         repository.createAsset( processAsset );
+        System.out.println("***************Hernsys createProcess");
         return path;
     }
 

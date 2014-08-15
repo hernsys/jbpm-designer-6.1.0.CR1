@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -34,6 +35,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import bpsim.impl.BpsimFactoryImpl;
+
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -79,6 +81,7 @@ import org.jbpm.designer.web.profile.impl.JbpmProfileImpl;
 import org.jbpm.migration.JbpmMigration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sun.misc.BASE64Encoder;
 
 /**
@@ -110,6 +113,9 @@ public class TransformerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+    	
+    	System.out.println("***************Hernsys doPost TransformerServlet");
+    	
         req.setCharacterEncoding("UTF-8");
         String formattedSvgEncoded = req.getParameter("fsvg");
         String rawSvgEncoded = req.getParameter("rsvg");

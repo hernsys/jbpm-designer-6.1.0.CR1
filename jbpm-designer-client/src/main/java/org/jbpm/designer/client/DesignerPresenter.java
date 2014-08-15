@@ -1,13 +1,16 @@
 package org.jbpm.designer.client;
 
+import static org.uberfire.client.common.ConcurrentChangePopup.newConcurrentDelete;
+import static org.uberfire.client.common.ConcurrentChangePopup.newConcurrentRename;
+import static org.uberfire.client.common.ConcurrentChangePopup.newConcurrentUpdate;
+
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -41,6 +44,7 @@ import org.uberfire.client.common.MultiPageEditor;
 import org.uberfire.client.common.Page;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -55,7 +59,10 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.uberfire.client.common.ConcurrentChangePopup.*;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 @WorkbenchEditor(identifier = "jbpm.designer", supportedTypes = { Bpmn2Type.class })
@@ -136,10 +143,19 @@ public class DesignerPresenter {
     private String version;
 
     private boolean passedProcessSources;
+    
+    @Inject
+    private Event<BeforeClosePlaceEvent> closePlaceEvent;
 
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
+    	
+    	// JSNI
+    	final JavaScriptObject window = getCurrentWindow();
+    	registerHandlers(DesignerPresenter.this, window);
+    	
+    	
         this.path = path;
         this.place = place;
 
@@ -401,6 +417,7 @@ public class DesignerPresenter {
     }
 
     public void assetCopyEvent( String uri ) {
+    	Window.alert("Hernsys assetCopyEvent");
         vfsServices.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path mypath ) {
@@ -422,6 +439,7 @@ public class DesignerPresenter {
     }
 
     public void assetRenameEvent( String uri ) {
+    	Window.alert("Hernsys assetRenameEvent");
         vfsServices.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path mypath ) {
@@ -444,6 +462,7 @@ public class DesignerPresenter {
     }
 
     public void assetDeleteEvent( String uri ) {
+    	Window.alert("Hernsys assetDeleteEvent");
         vfsServices.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path mypath ) {
@@ -456,6 +475,7 @@ public class DesignerPresenter {
     }
 
     public boolean assetUpdatedEvent() {
+    	Window.alert("Hernsys assetUpdatedEvent");
         if ( concurrentUpdateSessionInfo != null ) {
             newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
                                  concurrentUpdateSessionInfo.getIdentity(),
@@ -485,6 +505,7 @@ public class DesignerPresenter {
     }
 
     private RemoteCallback<Void> getDeleteSuccessCallback( final Path path ) {
+    	Window.alert("Hernsys getDeleteSuccessCallback");
         return new RemoteCallback<Void>() {
 
             @Override
@@ -496,6 +517,7 @@ public class DesignerPresenter {
     }
 
     private RemoteCallback<Path> getCopySuccessCallback() {
+    	Window.alert("Hernsys getCopySuccessCallback");
         return new RemoteCallback<Path>() {
             @Override
             public void callback( final Path path ) {
@@ -506,6 +528,7 @@ public class DesignerPresenter {
     }
 
     private RemoteCallback<Path> getRenameSuccessCallback() {
+    	Window.alert("Hernsys getRenameSuccessCallback");
         return new RemoteCallback<Path>() {
 
             @Override
@@ -519,6 +542,7 @@ public class DesignerPresenter {
 
     public void openInTab( String filename,
                            String uri ) {
+    	Window.alert("Hernsys openInTab");
         PlaceRequest placeRequestImpl = new PathPlaceRequest(
                 PathFactory.newPath( this.path.getFileSystem(), filename, uri )
         );
@@ -532,10 +556,37 @@ public class DesignerPresenter {
     }
 
     private void save() {
+    	Window.alert("Hernsys save");
         view.setProcessUnSaved( view.getEditorID() );
     }
 
     private void reload() {
+    	Window.alert("Hernsys reload");
         view.raiseEventReload( view.getEditorID() );
     }
+    
+    public void close() {
+        closePlaceEvent.fire( new BeforeClosePlaceEvent( this.place, true ) );
+    }
+    
+    //JSNI
+    native JavaScriptObject openWindow(String url) /*-{
+		return $wnd.open(url, 'blank');
+	}-*/;
+
+    native JavaScriptObject getCurrentWindow() /*-{
+		return $wnd;
+	}-*/;
+
+    native JavaScriptObject registerHandlers(DesignerPresenter jsni, JavaScriptObject window) /*-{
+ 		window.onbeforeunload = doOnbeforeunload;
+ 		function doOnbeforeunload() {
+    		jsni.@org.jbpm.designer.client.DesignerPresenter::onWindowClosed()();
+ 		}
+	}-*/;
+
+    private void onWindowClosed() {
+    	close();
+    }
+    
 }

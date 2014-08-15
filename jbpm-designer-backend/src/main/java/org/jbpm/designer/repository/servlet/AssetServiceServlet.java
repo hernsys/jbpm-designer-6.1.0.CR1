@@ -72,6 +72,8 @@ public class AssetServiceServlet extends HttpServlet {
         JSONObject returnObj = new JSONObject();
         JSONArray errorsArray = new JSONArray();
 
+        System.out.println("***************Hernsys doPost AssetServiceServlet");
+        
         try {
 
             if (profile == null) {
@@ -80,6 +82,7 @@ public class AssetServiceServlet extends HttpServlet {
             Repository repository = profile.getRepository();
             if(action != null && action.equals(ACTION_CREATE_ASSET)) {
                 try {
+                	System.out.println("***************Hernsys doPost ACTION_CREATE_ASSET");
                     AssetBuilder builder = AssetBuilderFactory.getAssetBuilder(Asset.AssetType.Text);
                     builder.content("")
                             .type(assetType)
@@ -99,14 +102,17 @@ public class AssetServiceServlet extends HttpServlet {
                 jsonResponse(returnObj, errorsArray, resp);
             } else if(action != null && action.equals(ACTION_UPDATE_ASSET)) {
                 try {
+                	System.out.println("***************Hernsys doPost ACTION_UPDATE_ASSET");
                     if(assetContentTransform != null && assetContentTransform.equals(TRANSFORMATION_JSON_TO_BPMN2)) {
                             assetContent = profile.createMarshaller().parseModel(assetContent, preprocessingData);
                     }
 
                     Asset<String> currentAsset = repository.loadAsset(assetId);
+                    System.out.println("***************Hernsys assetId " + assetId);
                     AssetBuilder builder = AssetBuilderFactory.getAssetBuilder(currentAsset);
                     builder.content(assetContent);
                     String id = repository.updateAsset(builder.getAsset(), commitMessage);
+                    System.out.println("***************Hernsys id " + id);
 
                     if(id == null) {
                         _logger.error("Unable to store asset: " + assetLocation);
@@ -120,6 +126,7 @@ public class AssetServiceServlet extends HttpServlet {
                 jsonResponse(returnObj, errorsArray, resp);
             } else if(action != null && action.equals(ACTION_DELETE_ASSET)) {
                 try {
+                	System.out.println("***************Hernsys doPost ACTION_DELETE_ASSET");
                     Boolean ret = repository.deleteAsset(assetId);
                     if(!ret) {
                         _logger.error("Unable to delete asset: " + assetId);
@@ -132,6 +139,7 @@ public class AssetServiceServlet extends HttpServlet {
                 jsonResponse(returnObj, errorsArray, resp);
             } else if(action != null && action.equals(ACTION_ASSET_EXISTS)) {
                 try {
+                	System.out.println("***************Hernsys doPost ACTION_ASSET_EXISTS");
                     Boolean ret = repository.assetExists(assetId);
                     returnObj.put("answer", String.valueOf(ret));
                 } catch (Exception e) {
@@ -141,6 +149,7 @@ public class AssetServiceServlet extends HttpServlet {
                 }
                 jsonResponse(returnObj, errorsArray, resp);
             } else if(action != null && action.equals(ACTION_CREATE_DIRECTORY)) {
+            	System.out.println("***************Hernsys doPost ACTION_CREATE_DIRECTORY");
                 Directory ret = repository.createDirectory(assetLocation);
                 if(ret == null) {
                     _logger.error("Unable to create asset: " + assetLocation);
@@ -149,6 +158,7 @@ public class AssetServiceServlet extends HttpServlet {
                 jsonResponse(returnObj, errorsArray, resp);
             } else if(action != null && action.equals(ACTION_DELETE_DIRECTORY)) {
                 try {
+                	System.out.println("***************Hernsys doPost ACTION_DELETE_DIRECTORY");
                     Boolean ret = repository.deleteDirectory(assetLocation, false);
                     returnObj.put("answer", String.valueOf(ret));
                 } catch (Exception e) {
@@ -159,6 +169,7 @@ public class AssetServiceServlet extends HttpServlet {
                 jsonResponse(returnObj, errorsArray, resp);
             } else if(action != null && action.equals(ACTION_DIRECTORY_EXISTS)) {
                 try {
+                	System.out.println("***************Hernsys doPost ACTION_DIRECTORY_EXISTS");
                     Boolean ret = repository.directoryExists(assetLocation);
                     returnObj.put("answer", String.valueOf(ret));
                 } catch (Exception e) {
@@ -169,6 +180,7 @@ public class AssetServiceServlet extends HttpServlet {
                 jsonResponse(returnObj, errorsArray, resp);
             } else if(action != null && action.equals(ACTION_LIST_DIRECTORIES)) {
                 try {
+                	System.out.println("***************Hernsys doPost ACTION_LIST_DIRECTORIES");
                     Collection<Directory> dirCollection = repository.listDirectories(assetLocation);
                     if(dirCollection!= null) {
                         JSONArray dirListingArray = new JSONArray();
@@ -189,6 +201,7 @@ public class AssetServiceServlet extends HttpServlet {
                 jsonResponse(returnObj, errorsArray, resp);
             } else if(action != null && action.equals(ACTION_LIST_ASSETS)) {
                 try {
+                	System.out.println("***************Hernsys doPost ACTION_LIST_ASSETS");
                     Collection<Asset> assetCollection = repository.listAssets(assetLocation);
                     if(assetCollection != null) {
                         JSONArray assetListingArray = new JSONArray();
@@ -218,6 +231,7 @@ public class AssetServiceServlet extends HttpServlet {
                 jsonResponse(returnObj, errorsArray, resp);
             } else if(action != null && action.equals(ACTION_GET_ASSET_SOURCE)) {
                 try {
+                	System.out.println("***************Hernsys doPost ACTION_GET_ASSET_SOURCE");
                     Asset<String> asset = null;
                     if(loadoption != null && loadoption.equals(OPTION_BY_ID)) {
                         asset = repository.loadAsset(assetId);
@@ -232,6 +246,7 @@ public class AssetServiceServlet extends HttpServlet {
                 }
             } else if(action != null && action.equals(ACTION_GET_ASSET_INFO)) {
                 try {
+                	System.out.println("***************Hernsys doPost ACTION_GET_ASSET_INFO");
                     Asset<String> asset = null;
                     if(loadoption != null && loadoption.equals(OPTION_BY_ID)) {
                         asset = repository.loadAsset(assetId);

@@ -25,6 +25,10 @@ public class FileStoreServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+    	
+    	System.out.println("***************Hernsys doPost FileStoreServlet");
+    	
+    	
         req.setCharacterEncoding("UTF-8");
     	String fname = req.getParameter("fname");
     	String fext = req.getParameter("fext");
