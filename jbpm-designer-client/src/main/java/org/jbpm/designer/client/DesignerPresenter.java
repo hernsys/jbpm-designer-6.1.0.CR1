@@ -61,7 +61,6 @@ import org.uberfire.workbench.type.FileNameUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
@@ -417,7 +416,6 @@ public class DesignerPresenter {
     }
 
     public void assetCopyEvent( String uri ) {
-    	Window.alert("Hernsys assetCopyEvent");
         vfsServices.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path mypath ) {
@@ -439,7 +437,6 @@ public class DesignerPresenter {
     }
 
     public void assetRenameEvent( String uri ) {
-    	Window.alert("Hernsys assetRenameEvent");
         vfsServices.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path mypath ) {
@@ -462,7 +459,6 @@ public class DesignerPresenter {
     }
 
     public void assetDeleteEvent( String uri ) {
-    	Window.alert("Hernsys assetDeleteEvent");
         vfsServices.call( new RemoteCallback<Path>() {
             @Override
             public void callback( final Path mypath ) {
@@ -475,7 +471,6 @@ public class DesignerPresenter {
     }
 
     public boolean assetUpdatedEvent() {
-    	Window.alert("Hernsys assetUpdatedEvent");
         if ( concurrentUpdateSessionInfo != null ) {
             newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
                                  concurrentUpdateSessionInfo.getIdentity(),
@@ -505,7 +500,6 @@ public class DesignerPresenter {
     }
 
     private RemoteCallback<Void> getDeleteSuccessCallback( final Path path ) {
-    	Window.alert("Hernsys getDeleteSuccessCallback");
         return new RemoteCallback<Void>() {
 
             @Override
@@ -517,7 +511,6 @@ public class DesignerPresenter {
     }
 
     private RemoteCallback<Path> getCopySuccessCallback() {
-    	Window.alert("Hernsys getCopySuccessCallback");
         return new RemoteCallback<Path>() {
             @Override
             public void callback( final Path path ) {
@@ -528,7 +521,6 @@ public class DesignerPresenter {
     }
 
     private RemoteCallback<Path> getRenameSuccessCallback() {
-    	Window.alert("Hernsys getRenameSuccessCallback");
         return new RemoteCallback<Path>() {
 
             @Override
@@ -542,7 +534,6 @@ public class DesignerPresenter {
 
     public void openInTab( String filename,
                            String uri ) {
-    	Window.alert("Hernsys openInTab");
         PlaceRequest placeRequestImpl = new PathPlaceRequest(
                 PathFactory.newPath( this.path.getFileSystem(), filename, uri )
         );
@@ -556,12 +547,10 @@ public class DesignerPresenter {
     }
 
     private void save() {
-    	Window.alert("Hernsys save");
         view.setProcessUnSaved( view.getEditorID() );
     }
 
     private void reload() {
-    	Window.alert("Hernsys reload");
         view.raiseEventReload( view.getEditorID() );
     }
     
@@ -570,10 +559,6 @@ public class DesignerPresenter {
     }
     
     //JSNI
-    native JavaScriptObject openWindow(String url) /*-{
-		return $wnd.open(url, 'blank');
-	}-*/;
-
     native JavaScriptObject getCurrentWindow() /*-{
 		return $wnd;
 	}-*/;
